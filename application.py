@@ -1,6 +1,6 @@
 import sqlite3 as sql
 import os, math
-from flask import Flask, render_template,request,session,redirect, url_for
+from flask import Flask, render_template,request,session,redirect, url_for, flash
 # from flask.ext.session import Session
 from flask import url_for
 from datetime import datetime,date,timedelta
@@ -251,6 +251,7 @@ def enquiry():
         cur.execute("insert into enquiry values (?,?,?,?,?)",(enq_id,username,cycle_name,cat_id,d_a_t_e))
         con.commit()
         msg = "Enquiry placed! Check on My Orders"
+        flash('Enquiry places successfully!')
         return redirect(url_for('allStock', cat=cat_name))
         
     return redirect('/index')
