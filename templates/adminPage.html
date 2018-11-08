@@ -1,0 +1,45 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+    <link rel="stylesheet" href="../static/addStock.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+</head>
+
+<body>
+  <div class="ui top fixed inverted menu" style="display: block;">
+      <div class="ui container" style="font-size: 1.1rem;">
+          <a href="/adminPage" class="header item">Cycle Database System</a>
+          <a href="/logout" style="margin-left: 73%;">
+          <button class="ui red basic large button" style="margin-top: 2px; margin-bottom:2px; ">Log Out</button>
+        </a>
+
+      </div>
+      <div class="ui container ">
+          <div class="ui three item menu ">
+              <a class="active item " href="#">Stocks</a>
+              <a class="item " href="#">Requests</a>
+              <!-- <a class="item ">Unisex</a> -->
+              <a class="item " href="#">Suppliers</a>
+          </div>
+      </div>
+    </div>
+    <!-- BODY -->
+    <div id="body">
+
+    
+    <div class="ui container">
+     <a href="/addStock">
+      <button class="ui right floated green large button" type="submit">Add Stock</button>
+    </a>
+    </div>
+  </div>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js "></script>
+    <script>
+        $(".ui.dropdown").dropdown();
+    </script>
+  </body>
+  </html>
+
+
