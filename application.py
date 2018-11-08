@@ -220,20 +220,23 @@ def adminLogin():
 @app.route('/allStock', methods=['GET','POST'])
 def allStock():
     if 'username' in session:
+        username = session['username']
         con = sql.connect('database.db')
         cur = con.cursor()   
         # cur.execute('select cat_name from category')
         # rows1 = cur.fetchall()
+        cur.execute("select e.enq_date, e.cycle_name, c.cat_name, s.sell_price from enquiry e, stock s, category c where e.cycle_name = s.cycle_name and e.cat_id = c.cat_id and e.user_id = (?)",(username,))
+        rows1 = cur.fetchall()
         cat_name = request.args.get('cat')
         if(cat_name):
             # cat_name = request.form['category']
             
             cur.execute("select s.* from stock s, category c where s.cat_id = c.cat_id and c.cat_name = (?)",(cat_name,))
             rows = cur.fetchall()
-            return render_template('/allStock.html', rows=rows)
+            return render_template('/allStock.html', rows=rows,rows1=rows1)
         cur.execute("select s.* from stock s, category c where s.cat_id = c.cat_id and c.cat_name = 'boys'")
         rows = cur.fetchall()
-        return render_template('/allStock.html', rows=rows)   
+        return render_template('/allStock.html', rows=rows,rows1=rows1)   
     return redirect('/index')
 
 @app.route('/enquiry')
