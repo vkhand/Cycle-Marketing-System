@@ -194,6 +194,14 @@ def adminLogin():
             return render_template('adminLogin.html',msg=msg)
     return render_template('adminLogin.html')
 
+
+# @app.route('/adminPage', methods=['GET','POST'])
+# def stock():
+#     con = sql.connect('database.db')
+#     cur = con.cursor()  
+#     cur.execute("select * from stock")
+#     rows = cur.fetchall()
+#     return render_template('/adminPage.html', rows=rows)
 # ------------------PAGES TO BE UPDATED--------------------------
 # @app.route('/suppliers')
 # def suppliers():
@@ -266,7 +274,11 @@ def enquiry():
 @app.route('/adminPage', methods=['GET','POST'])
 def adminPage():
     if (session['username'] == admin):
-        return render_template('adminPage.html')
+        con = sql.connect('database.db')
+        cur = con.cursor()  
+        cur.execute("select * from stock")
+        rows = cur.fetchall()
+        return render_template('adminPage.html',rows=rows)
     return redirect('/index')
 
 if __name__ == "__main__":
