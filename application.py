@@ -271,12 +271,13 @@ def enquiry():
         
     return redirect('/index')
 
-@app.route('/adminPage', methods=['GET','POST'])
+@app.route('/adminPage')
 def adminPage():
     if (session['username'] == admin):
         con = sql.connect('database.db')
         cur = con.cursor()  
-        cur.execute("select * from stock")
+        # cur.execute("select s.cycle_name,c.cat_name,s.cost_price,s.sell_price,s.quantity,sup.s_name from stock s, suppliers sup, supplies ss, category c where s.cat_id=c.cat_id and s.cycle_name=ss.cycle_name and ss.s_id=sup.s_id")
+        cur.execute('select * from stock')
         rows = cur.fetchall()
         return render_template('adminPage.html',rows=rows)
     return redirect('/index')
