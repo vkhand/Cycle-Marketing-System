@@ -276,10 +276,14 @@ def adminPage():
     if (session['username'] == admin):
         con = sql.connect('database.db')
         cur = con.cursor()  
-        # cur.execute("select s.cycle_name,c.cat_name,s.cost_price,s.sell_price,s.quantity,sup.s_name from stock s, suppliers sup, supplies ss, category c where s.cat_id=c.cat_id and s.cycle_name=ss.cycle_name and ss.s_id=sup.s_id")
-        cur.execute('select * from stock')
+        cur.execute("select s.cycle_name,c.cat_name,s.cost_price,s.sell_price,s.quantity,sup.s_name from stock s, suppliers sup, supplies ss, category c where s.cat_id=c.cat_id and s.cycle_name=ss.cycle_name and ss.s_id=sup.s_id")
+        # cur.execute('select * from stock')
         rows = cur.fetchall()
-        return render_template('adminPage.html',rows=rows)
+        cur.execute("select * from suppliers")
+        rows1=cur.fetchall()
+        cur.execute("select e.user_id, e.cycle_name, c.cat_name, e.enq_date from enquiry e, category c  where e.cat_id=c.cat_id")
+        rows2=cur.fetchall()
+        return render_template('adminPage.html',rows=rows, rows1=rows1, rows2=rows2)        
     return redirect('/index')
 
 if __name__ == "__main__":

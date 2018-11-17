@@ -43,8 +43,9 @@
                     <th>Category</th>
                     <th>Cost Price</th>
                     <th>Sell Price</th>
-                    <th>Qty</th>
                     <th>Supplier</th>
+                    <th>Qty</th>
+                    
                     
                 </tr>
             </thead>
@@ -56,7 +57,7 @@
                         <td>{{row[2]}}</td>
                         <td>{{row[3]}}</td>
                         <td>{{row[5]}}</td>
-                        <td>{{row[7]}}</td>
+                        <td>{{row[4]}}</td>
                     </tr>
                     {% endfor %}
             </tbody>
@@ -65,12 +66,64 @@
     </div>
   <!-- REQUESTS -->
   <div id="requests" style="display: none;">
-      <p>Requests</p>
+    <div id="table" style="margin-left: 10px; margin-right: 10px; padding-top: 75px;">
+        <h6 class="ui small header">Requests</h6>
+    <table class="ui celled table">
+        <thead>
+            <tr>
+                <th>User ID</th>
+                <th>Cycle Name</th>
+                <th>Category</th>
+                <th>Date</th>       
+            </tr>
+        </thead>
+        <tbody>
+                {% for row in rows2 %}
+                <tr>
+                    <td>{{row[0]}}</td>
+                    <td>{{row[1]}}</td>
+                    <td>{{row[2]}}</td>
+                    <td>{{row[3]}}</td>        
+                </tr>
+                {% endfor %}
+        </tbody>
+
+    </table>
+</div>
   </div>
 
   <!-- suppliers -->
   <div id="suppliers" style="display: none;">
-    <p>Suppliers</p>
+    <div id="table" style="margin-left: 10px; margin-right: 10px; padding-top: 75px;">
+        <h6 class="ui small header">Supplier</h6>
+    <table class="ui celled table">
+        <thead>
+            <tr>
+                <th>Supplier ID</th>
+                <th>Supplier Name</th>
+                <th>City</th>
+                <th>Phone</th>
+                <th>E-mail</th>
+                
+                
+                
+            </tr>
+        </thead>
+        <tbody>
+                {% for row in rows1 %}
+                <tr>
+                    <td>{{row[0]}}</td>
+                    <td>{{row[1]}}</td>
+                    <td>{{row[2]}}</td>
+                    <td>{{row[3]}}</td>
+                    <td>{{row[4]}}</td>
+                
+                </tr>
+                {% endfor %}
+        </tbody>
+
+    </table>
+</div>
 
   </div>
 
