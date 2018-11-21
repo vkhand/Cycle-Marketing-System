@@ -51,7 +51,7 @@
         <div class="ui modal">
             <i class="close icon"></i>
             <div class="ui center aligned header">
-                Previous Enquiries
+                Previous  Enquiries
             </div>
             <div style="margin-left: 5px; margin-right: 5px; margin-bottom: 5px;">
                 <table class="ui celled table">
@@ -81,10 +81,9 @@
 
 
     </div>
-    <div style="margin-top:10%;"></div>
-    <div class="ui link cards">
     {% for row in rows %}
-        <div class="card">
+    <div style="margin-top:10%;">
+        <div class="ui card">
             <div class="image">
                 <img src="../static/image/{{row[4]}}">
             </div>
@@ -94,21 +93,18 @@
                     <span class="date">₹{{row[3]}}</span>
                 </div>
                 <div class="description">
-                  
+                  <a href = "/enquiry?cycle={{row[0]}}&cat={{row[1]}}">Enquiry</a>
                 </div>
-                <a  href = "/enquiry?cycle={{row[0]}}&cat={{row[1]}}">
-                    <div class="ui bottom attached button" >
-                            <i class="add icon"></i>
-                            Place Enquiry
-                    </div>
-                </a>
             </div>
+            <!-- <div class="extra content">
+                <a>
+                    <i class="user icon"></i>
+                    22 Friends
+                </a>
+            </div> -->
         </div>
-        {% endfor %}
     </div>
-
-    <!-- </div> -->
-   
+    {% endfor %}
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js "></script>
