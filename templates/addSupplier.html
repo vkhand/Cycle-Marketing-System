@@ -16,49 +16,36 @@
   <div id="body">
   <div class="ui container">
     <div class="ui form">
-      <form action="/addStock" method="POST" class="ui large form" enctype=multipart/form-data>
+      <form action="/addSupplier" method="POST" class="ui large form">
       <div class="eight wide field">
+            <div class="field">
+                    <label for="s_id">Supplier ID</label>
+        
+                    {% if rows %}
+                    <div>Existing Supplers are</div>
+                    {%for row  in rows %}
+                    {{row[0]}} : {{row[1]}}<br>
+                    {% endfor %}
+                    {% endif %}
+                    <div>Increment supplier id by one for new supplier</div>
+                    <p></p>
+                    <input type="text" name="s_id" placeholder="Supplier ID">
+                </div>
         <div class="field">
-          <label for="cycle_name">Cycle Name</label>
-          <input type="text" name="cycle_name" placeholder="Cycle Name">
+          <label for="s_name">Supplier Name</label>
+          <input type="text" name="s_name" placeholder="Supplier Name">
         </div>
         <div class="field">
-          <label for="cat_id">Category ID</label>
-
-            {% if rows1 %}
-            {%for row  in rows1 %}
-            {{row[0]}} : {{row[1]}}<br>
-            {% endfor %}
-            {% endif %}
-            <p></p>
-          <input type="text" name="cat_id" placeholder="Category ID">
+          <label for="s_city">City</label>
+          <input type="text" name="s_city" placeholder="City">
         </div>
         <div class="field">
-            <label for="s_id">Supplier ID</label>
-
-            {% if rows2 %}
-            {%for row  in rows2 %}
-            {{row[0]}} : {{row[1]}}<br>
-            {% endfor %}
-            {% endif %}
-            <p></p>
-            <input type="text" name="s_id" placeholder="Supplier ID">
+            <label for="ph_no">Phone Number</label>
+            <input type="number" name="ph_no" placeholder="Phone Number">
         </div>
         <div class="field">
-          <label for="cost_price">Cost Price</label>
-            <input type="number" name="cost_price" placeholder="Cost Price">
-        </div>
-        <div class="field">
-          <label for="">Upload cycle image</label>  
-          <input type="file" name="image" placeholder="browse">
-        </div>
-        <div class="field">
-          <label for="quantity">Add quantity</label>
-          <input type="number" name="quantity" placeholder="Quantity">
-        </div>
-        <div class="field">
-            <label for="description">More description</label>
-            <input type="text" name="description" placeholder="Description">
+            <label for="email">Email</label>
+            <input type="text" name="email" placeholder="Email">
           </div>
         <a href="/adminPage">
           <button class="ui button green">Back</button>

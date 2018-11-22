@@ -36,7 +36,7 @@
     <!-- STOCKS -->
     <div id="table" style="margin-left: 10px; margin-right: 10px; padding-top: 75px;">
             <h6 class="ui small header">Stocks</h6>
-        <table class="ui celled table">
+        <table class="ui selectable celled table">
             <thead>
                 <tr>
                     <th>Cycle Name</th>
@@ -50,15 +50,17 @@
                 </tr>
             </thead>
             <tbody>
-                    {% for row in rows %}
-                    <tr>
+                    {% for row in rows %}                    
+                    <tr class='clickable-row' data-href='/updateStock?cycle_name={{row[0]}}' style="cursor: pointer;">
+                    
                         <td>{{row[0]}}</td>
                         <td>{{row[1]}}</td>
                         <td>{{row[2]}}</td>
                         <td>{{row[3]}}</td>
                         <td>{{row[5]}}</td>
                         <td>{{row[4]}}</td>
-                    </tr>
+                    
+                    </tr>                
                     {% endfor %}
             </tbody>
 
@@ -72,9 +74,11 @@
         <thead>
             <tr>
                 <th>User ID</th>
+                <th>Name</th>
                 <th>Cycle Name</th>
                 <th>Category</th>
-                <th>Date</th>       
+                <th>Date</th> 
+                <th>Phone</th>      
             </tr>
         </thead>
         <tbody>
@@ -83,7 +87,9 @@
                     <td>{{row[0]}}</td>
                     <td>{{row[1]}}</td>
                     <td>{{row[2]}}</td>
-                    <td>{{row[3]}}</td>        
+                    <td>{{row[3]}}</td>
+                    <td>{{row[4]}}</td>  
+                    <td>{{row[5]}}</td>      
                 </tr>
                 {% endfor %}
         </tbody>
@@ -134,6 +140,9 @@
         document.getElementById('stock').onclick = function() {stocks() };
         document.getElementById('request').onclick=function() {requests()};
         document.getElementById('supplier').onclick=function() {suppliers()};
+        $(".clickable-row").click(function() {
+        window.location = $(this).data("href");
+    });
         function stocks() {
             var x = document.getElementById("table");
             var y = document.getElementById("requests");

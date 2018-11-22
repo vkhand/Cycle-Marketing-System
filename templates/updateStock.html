@@ -1,0 +1,88 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+    <link rel="stylesheet" href="../static/dummy.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+</head>
+
+<body>
+    <div id="menu" class="ui fixed inverted menu">
+        <div class="ui container">
+          <a href="/login" class="header item">Cycle Database System</a>
+        </div>
+      </div>
+  <div id="body">
+    {% for row in rows %}
+  <div class="ui container">
+    <div class="ui form">
+      <form action="/updateStock" method="POST" class="ui large form" enctype=multipart/form-data>
+        <div class="eight wide field">
+          <div class="field">
+            <label for="cycle_name">Cycle Name</label>
+            <input type="text" name="cycle_name" placeholder="Cycle Name" value="{{row[0]}}">
+          </div>
+          <div class="field">
+              <label for="cat_id">Category ID</label>
+    
+                {% if rows1 %}
+                {%for row  in rows1 %}
+                {{row[0]}} : {{row[1]}}<br>
+                {% endfor %}
+                {% endif %}
+                <p></p>
+              <input type="text" name="cat_id" placeholder="Category ID" value="{{row[1]}}">
+            </div>
+            <div class="field">
+                <label for="s_id">Supplier ID</label>
+    
+                {% if rows2 %}
+                {%for row  in rows2 %}
+                {{row[0]}} : {{row[1]}}<br>
+                {% endfor %}
+                {% endif %}
+                <p></p>
+                <input type="text" name="s_id" placeholder="Supplier ID" value="{{row[7]}}">
+            </div>
+          <div class="field">
+            <label for="cost_price">Cost Price</label>
+              <input type="number" name="cost_price" placeholder="Cost Price" value="{{row[2]}}">
+          </div>
+          <div class="field">
+            <label for="">Original cycle image</label>  
+            <img src="../static/image/{{row[4]}}">
+            <label for="image">Browse to update/replace this image</label> 
+            <input type="file" name="image" placeholder="browse" value="{{row[4]}}">
+          </div>
+          <div class="field">
+            <label for="quantity">Quantity</label>
+            <input type="number" name="quantity" placeholder="Quantity" value="{{row[5]}}">
+          </div>
+          <div class="field">
+              <label for="description">Description</label>
+              <input type="text" name="description" placeholder="Description" value="{{row[6]}}">
+          </div>
+          <button class="ui button green submit">Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js "></script>
+</body>
+</html>
+
+
+
+<!-- <form action="/addStock" method="POST">
+    <input type="text" name="cycle_name" placeholder="Cycle Name"><br>
+    <input type="text" name="cat_id" placeholder="Category id"><br>
+    <input type="number" name="cost_price" placeholder="Cost Price"><br>
+    Upload cycle image<input type="file" name="image" placeholder="browse"><br>
+    <input type="number" name="quantity" placeholder="Quantity"><br>
+    <input type="submit" value="Add Stock">
+  </form>
+
+  <a href='/login'>logout</a> -->
