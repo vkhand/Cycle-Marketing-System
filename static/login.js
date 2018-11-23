@@ -16,10 +16,6 @@ $(document).ready(function() {
           {
             type: "empty",
             prompt: "Please enter your password"
-          },
-          {
-            type: length[0],
-            prompt: "Please enter your password"
           }
         ]
       }
