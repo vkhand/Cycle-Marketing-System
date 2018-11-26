@@ -141,6 +141,7 @@ def addStock():
         if(request.method == 'POST'):
             cycle_name = request.form['cycle_name']
             cat_id = request.form['cat_id']
+            s_id = request.form['s_id']
             cost_price = request.form['cost_price']
             quantity = request.form['quantity']
             image = request.files['image']
@@ -156,7 +157,9 @@ def addStock():
             
             cur.execute("insert into stock(cycle_name,cat_id,cost_price,cycle_image,quantity,description) values(?,?,?,?,?,?)",(cycle_name,cat_id,cost_price,imagename,quantity,description))
             con.commit()
-            msg = "Stock added successfully"
+            cur.execute("insert into supplies values(?,?)",(s_id,cycle_name,))
+            con.commit()
+            msg = "Stock added successfully" 
             cur.execute("select * from category")
             rows1 = cur.fetchall()
             cur.execute("select * from suppliers")
