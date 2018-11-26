@@ -157,7 +157,11 @@ def addStock():
             cur.execute("insert into stock(cycle_name,cat_id,cost_price,cycle_image,quantity,description) values(?,?,?,?,?,?)",(cycle_name,cat_id,cost_price,imagename,quantity,description))
             con.commit()
             msg = "Stock added successfully"
-            return render_template('addStock.html',msg=msg)
+            cur.execute("select * from category")
+            rows1 = cur.fetchall()
+            cur.execute("select * from suppliers")
+            rows2 = cur.fetchall()
+            return render_template('addStock.html',rows1=rows1,rows2=rows2)
         cur.execute("select * from category")
         rows1 = cur.fetchall()
         cur.execute("select * from suppliers")
