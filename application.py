@@ -40,21 +40,6 @@ def main():
     return redirect(url_for('login'))
 
 
-def validate_user(username,password):
-    con = mysql.connection
-    validate = False
-    
-    with con:
-        cur = con.cursor()
-        cur.execute('select user_id, password from customer')
-        rows = cur.fetchall()
-        for row in rows:
-            dUser = row[0]
-            dPass = row[1]
-            if(dUser == username and dPass == password):
-                validate = True
-    return validate
-
 @app.route('/login', methods =['GET','POST'])
 def login():
     error = None
@@ -71,6 +56,21 @@ def login():
     if 'username' in session:
         return redirect('/index')
     return render_template('login.html',error=error)
+
+def validate_user(username,password):
+    con = mysql.connection
+    validate = False
+    
+    with con:
+        cur = con.cursor()
+        cur.execute('select user_id, password from customer')
+        rows = cur.fetchall()
+        for row in rows:
+            dUser = row[0]
+            dPass = row[1]
+            if(dUser == username and dPass == password):
+                validate = True
+    return validate
 
 @app.route('/signup',methods=['GET','POST'])
 def signup():
