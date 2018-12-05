@@ -1,14 +1,20 @@
-import sqlite3 as sql
 import os, math
 from flask import Flask, render_template,request,session,redirect, url_for, flash
-# from flask.ext.session import Session
 from flask import url_for
+from flask_mysqldb import MySQL
 from datetime import datetime,date,timedelta
 from werkzeug.utils import secure_filename
 import random,uuid
 
 app = Flask(__name__)
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_DATABASE_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = 'vikash1234'
+app.config['MYSQL_DB'] = 'cycledatabase'
+app.config['MYSQL_HOST'] = 'localhost'
+
 app.secret_key = '%jsdj!@'
+mysql = MySQL(app)
 UPLOAD_FOLDER = 'static/image'
 ALLOWED_EXTENSIONS = set(['jpeg', 'jpg', 'png'])
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -49,7 +55,7 @@ def login():
     return render_template('login.html',error=error)
 
 def validate_user(username,password):
-    con = sql.connect('database.db')
+    con = mysql.connection
     validate = False
     
     with con:
@@ -65,7 +71,7 @@ def validate_user(username,password):
 
 @app.route('/signup',methods=['GET','POST'])
 def signup():
-    con = sql.connect('database.db')
+    con = mysql.connection
     cur = con.cursor()
     error = None
     if request.method == 'POST':
@@ -80,7 +86,7 @@ def signup():
                 error = 'Username already exist! Try other username'
                 return render_template('signup.html',error=error)
         session['username'] = username
-        cur.execute("insert into customer values(?,?,?,?)",(username,password,name,ph_no))
+        cur.execute("insert into customer values(%s,%s,%s,%s)",(username,password,name,ph_no))
         con.commit()
         return redirect('/index')
     if 'username' in session:
@@ -108,23 +114,23 @@ def logout():
 def myAccount():
     if 'username' in session:
         username = session['username']
-        con = sql.connect('database.db')
+        con = mysql.connection
         cur = con.cursor()
-        cur.execute("select user_id,name,ph_no from customer where user_id = (?)",(username,))
+        cur.execute("select user_id,name,ph_no from customer where user_id = (%s)",(username,))
         rows = cur.fetchone()
-        #rows has user information, logged in
-        return render_template('/myAccount.html',rows=rows) #update/change here
+
+        return render_template('/myAccount.html',rows=rows) 
     return redirect('/index')
 
 @app.route('/myOrders', methods=['GET'])
 def myOrders():
     if 'username' in session:
         username = session['username']
-        con = sql.connect('database.db')
+        con = mysql.connection
         cur = con.cursor()
-        cur.execute("select c.name, e.enq_id,e.enq_date, e.cycle_name,g.cat_name,s.sell_price from customer c, enquiry e, category g, stock s where c.user_id = e.user_id and s.cycle_name = e.cycle_name and g.cat_id = e.cat_id and c.user_id = (?)",(username,))
+        cur.execute("select c.name, e.enq_id,e.enq_date, e.cycle_name,g.cat_name,s.sell_price from customer c, enquiry e, category g, stock s where c.user_id = e.user_id and s.cycle_name = e.cycle_name and g.cat_id = e.cat_id and c.user_id = (%s)",(username,))
         rows = cur.fetchall()
-        return render_template('/myOrders.html',rows=rows) #update/change here
+        return render_template('/myOrders.html',rows=rows) 
     return redirect('/index')
 
 
@@ -134,7 +140,7 @@ def myOrders():
 @app.route('/addStock',methods = ['GET','POST'])
 def addStock():
     if (session['username'] == admin):
-        con = sql.connect('database.db')
+        con = mysql.connection
         cur = con.cursor()
         duplicate = False
         msg = None
@@ -155,26 +161,28 @@ def addStock():
                 msg = 'Cycle already in stock'
                 return render_template('addStock.html',msg = msg)
             
-            cur.execute("insert into stock(cycle_name,cat_id,cost_price,cycle_image,quantity,description) values(?,?,?,?,?,?)",(cycle_name,cat_id,cost_price,imagename,quantity,description))
+            cur.execute("insert into stock(cycle_name,cat_id,cost_price,cycle_image,quantity,description) values(%s,%s,%s,%s,%s,%s)",(cycle_name,cat_id,cost_price,imagename,quantity,description))
             con.commit()
-            cur.execute("insert into supplies values(?,?)",(s_id,cycle_name,))
+            cur.execute('call add_supplies(%s,%s)',(s_id,cycle_name))
             con.commit()
             msg = "Stock added successfully" 
             cur.execute("select * from category")
             rows1 = cur.fetchall()
             cur.execute("select * from suppliers")
             rows2 = cur.fetchall()
+
             return render_template('addStock.html',rows1=rows1,rows2=rows2)
         cur.execute("select * from category")
         rows1 = cur.fetchall()
         cur.execute("select * from suppliers")
         rows2 = cur.fetchall()
+
         return render_template('addStock.html',rows1=rows1,rows2=rows2)
     return redirect('/index')
     
 def duplicate_stock(cycle_name):
 
-    con = sql.connect('database.db')
+    con = mysql.connection
     duplicate = False
     
     with con:
@@ -208,55 +216,17 @@ def adminLogin():
     return render_template('adminLogin.html')
 
 
-# @app.route('/adminPage', methods=['GET','POST'])
-# def stock():
-#     con = sql.connect('database.db')
-#     cur = con.cursor()  
-#     cur.execute("select * from stock")
-#     rows = cur.fetchall()
-#     return render_template('/adminPage.html', rows=rows)
-# ------------------PAGES TO BE UPDATED--------------------------
-# @app.route('/suppliers')
-# def suppliers():
-#     con = sql.connect('database.db')
-#     cur = con.cursor()
-#     cur.execute("select * from suppliers")
-#     rows = cur.fetchall()
-#     #rows-> all supplier data
-
-# @app.route('/suppliedCycles')
-# def suppliedCycles():
-#     #selected_supplier
-#     con = sql.connect('database.db')
-#     cur = con.cursor()
-#     cur.execute("select p.cycle_name from suppliers s, supplies p where s.s_id = p.s_id and s_id = (?)",(selected_supplier,))
-#     rows = cur.fetchall()
-#     #rows->list of cycles by a selected supplier
-
-# @app.route('/allRequests')
-# def allRequests():
-
-#     con = sql.connect('database.db')
-#     cur = con.cursor()
-#     cur.execute("select e.*,c.name,c.email from enquiry e, customer c where c.user_id = e.user_id") 
-#     rows = cur.fetchall()
-#     #rows-> shows all the incoming requests from any user
-
 @app.route('/allStock', methods=['GET','POST'])
 def allStock():
     if 'username' in session:
         username = session['username']
-        con = sql.connect('database.db')
+        con = mysql.connection
         cur = con.cursor()   
-        # cur.execute('select cat_name from category')
-        # rows1 = cur.fetchall()
-        cur.execute("select e.enq_date, e.cycle_name, c.cat_name, s.sell_price from enquiry e, stock s, category c where e.cycle_name = s.cycle_name and e.cat_id = c.cat_id and e.user_id = (?)",(username,))
+        cur.execute("select e.enq_date, e.cycle_name, c.cat_name, s.sell_price from enquiry e, stock s, category c where e.cycle_name = s.cycle_name and e.cat_id = c.cat_id and e.user_id = (%s)",(username,))
         rows1 = cur.fetchall()
         cat_name = request.args.get('cat')
-        if(cat_name):
-            # cat_name = request.form['category']
-            
-            cur.execute("select s.* from stock s, category c where s.cat_id = c.cat_id and c.cat_name = (?)",(cat_name,))
+        if(cat_name):        
+            cur.execute("select s.* from stock s, category c where s.cat_id = c.cat_id and c.cat_name = (%s)",(cat_name,))
             rows = cur.fetchall()
             return render_template('/allStock.html', rows=rows,rows1=rows1)
         cur.execute("select s.* from stock s, category c where s.cat_id = c.cat_id and c.cat_name = 'boys'")
@@ -268,15 +238,15 @@ def allStock():
 def enquiry():
     if 'username' in session:
         username = session['username']
-        con = sql.connect('database.db')
+        con = mysql.connection
         cur = con.cursor()
         cycle_name = request.args.get('cycle')
         cat_id = request.args.get('cat')
         enq_id = str(uniqueid())
         d_a_t_e=(datetime.now().date())
-        cur.execute("select cat_name from category where cat_id = (?)",(cat_id,))
+        cur.execute("select cat_name from category where cat_id = (%s)",(cat_id,))
         cat_name = cur.fetchone()
-        cur.execute("insert into enquiry values (?,?,?,?,?)",(enq_id,username,cycle_name,cat_id,d_a_t_e))
+        cur.execute("insert into enquiry values (%s,%s,%s,%s,%s)",(enq_id,username,cycle_name,cat_id,d_a_t_e))
         con.commit()
         msg = "Enquiry placed! Check on My Orders"
         flash('Enquiry places successfully!')
@@ -287,10 +257,9 @@ def enquiry():
 @app.route('/adminPage')
 def adminPage():
     if (session['username'] == admin):
-        con = sql.connect('database.db')
+        con = mysql.connection
         cur = con.cursor()  
         cur.execute("select s.cycle_name,c.cat_name,s.cost_price,s.sell_price,s.quantity,sup.s_name from stock s, suppliers sup, supplies ss, category c where s.cat_id=c.cat_id and s.cycle_name=ss.cycle_name and ss.s_id=sup.s_id")
-        # cur.execute('select * from stock')
         rows = cur.fetchall()
         cur.execute("select * from suppliers")
         rows1=cur.fetchall()
@@ -302,11 +271,11 @@ def adminPage():
 @app.route('/updateStock', methods=['GET','POST'])
 def updateStock():
     if(session['username'] == admin):
-        con = sql.connect('database.db')
+        con = mysql.connection
         cur = con.cursor() 
         if (request.method == 'GET'):
             cycle_name = request.args.get('cycle_name')
-            cur.execute("select s.*,sup.s_id from stock s, supplies sup where s.cycle_name = sup.cycle_name and s.cycle_name = (?)",(cycle_name,)) 
+            cur.execute("select s.*,sup.s_id from stock s, supplies sup where s.cycle_name = sup.cycle_name and s.cycle_name = (%s)",(cycle_name,)) 
             rows = cur.fetchall()
             cur.execute("select * from category")
             rows1 = cur.fetchall()
@@ -330,13 +299,13 @@ def updateStock():
         
         if(image):
             imagename = filename
-            cur.execute("update stock set cat_id =(?),cost_price=(?),quantity=(?),cycle_image=(?),description=(?) where cycle_name=(?)",(cat_id,cost_price,quantity,imagename,description,cycle_name,))
+            cur.execute("update stock set cat_id =(%s),cost_price=(%s),quantity=(%s),cycle_image=(%s),description=(%s) where cycle_name=(%s)",(cat_id,cost_price,quantity,imagename,description,cycle_name,))
             con.commit()
         elif(image is None):
-            cur.execute("update stock set cat_id =(?),cost_price=(?),quantity=(?),description=(?) where cycle_name=(?)",(cat_id,cost_price,quantity,description,cycle_name,))
+            cur.execute("update stock set cat_id =(%s),cost_price=(%s),quantity=(%s),description=(%s) where cycle_name=(%s)",(cat_id,cost_price,quantity,description,cycle_name,))
             con.commit()    
-        
-        cur.execute("update supplies set s_id = (?) where cycle_name = (?)",(s_id,cycle_name,))
+    
+        cur.execute('call update_supplies(%s,%s)',(s_id,cycle_name))
         con.commit()
         return(redirect(url_for('adminPage')))
     return redirect(url_for('index'))
@@ -345,7 +314,7 @@ def updateStock():
 @app.route('/addSupplier',methods = ['GET','POST'])
 def addSupplier():
     if (session['username'] == admin):
-        con = sql.connect('database.db')
+        con = mysql.connection
         cur = con.cursor()
         duplicate = False
         msg = None
@@ -364,7 +333,7 @@ def addSupplier():
                 msg = 'Supplier id already exist!'
                 return render_template('addSupplier.html',msg = msg,rows=rows)
             
-            cur.execute("insert into suppliers values(?,?,?,?,?)",(s_id,s_name,s_city,ph_no,email))
+            cur.execute("insert into suppliers values(%s,%s,%s,%s,%s)",(s_id,s_name,s_city,ph_no,email))
             con.commit()
             msg = "Supplier added successfully"
             cur.execute("select * from suppliers")
@@ -376,7 +345,7 @@ def addSupplier():
     
 def duplicate_supplier(s_id):
 
-    con = sql.connect('database.db')
+    con = mysql.connection
     duplicate = False
     
     with con:
@@ -394,10 +363,10 @@ def duplicate_supplier(s_id):
 def deleteStock():
     if(session['username'] == admin):
         msg = None
-        con = sql.connect('database.db')
+        con = mysql.connection
         cur = con.cursor()
         cycle_name = request.args.get('cycle_name')
-        cur.execute("delete from stock where cycle_name = (?)",(cycle_name,))
+        cur.execute("delete from stock where cycle_name = (%s)",(cycle_name,))
         con.commit()
         msg = "Cycle deleted successfully from database"
         return redirect(url_for('adminPage', msg=msg))
