@@ -1,13 +1,13 @@
+name: My plan
+level: beginner
+update_id: 30051f19-08fc-410a-bd4f-c7933a3c63be
+author: Jit
+version: 0.1
 owners:
   default: null
-name: My plan
-author: Jit
-items:
-  - name: Scan your code dependencies for vulnerabilities (SCA)
-    uses: jitsecurity-controls/jit-plans/items/code/item-dependency-check.yml@latest
-level: beginner
-version: 0.1
 references:
   - https://www.jit.io
 tags: []
-
+items:
+  - name: Scan your code dependencies for vulnerabilities (SCA)
+    uses: jitsecurity-controls/jit-plans/items/code/item-dependency-check.yml@latest
